@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Organizer",
+    "slug": "todoapp",
+    "privacy": "public",
+    "sdkVersion": "36.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/KR-VEC-LOGO.png",
+    "splash": {
+      "image": "./src/assets/KR-VEC-LOGO.png",
+      "resizeMode": "contain",
+      "backgroundColor": "black"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "./src/assets/"
+    ],
+    "ios": {
+      "supportsTablet": true
+    }
+  }
+}
