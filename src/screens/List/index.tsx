@@ -1,19 +1,14 @@
 import React, { FC, useState } from 'react';
-import { Text, ScrollView,View, Alert, Dimensions, TouchableOpacity, Modal} from 'react-native';
-import styled from 'styled-components/native';
-import Colors from '../../constans/Colors';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { Text,View,Dimensions, TouchableOpacity, Modal,FlatList} from 'react-native';
 import 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AddPage from '../AddNote';
+import TodoItem from '../../components/todoItem';
+import ReviewForm from '../AddNote';
 import {globalStyles} from '../../styles/globalStyle';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-const ListText = styled.Text`
-    margin: 50px 20px;
-    font-size: 16px;
-    color: ${Colors.black};
-`;
+import { setNestedObjectValues } from 'formik';
+
 
 
 interface IListProps {
@@ -23,44 +18,56 @@ const Tab = createBottomTabNavigator();
 
 const List: FC<IListProps> = props => {
     const [modalOpen,SetModalOpen]=useState(false);
+
+    const [todos, setTodos] = useState([
+        { title: 'Zrobić przelew',body: 'przelew za zakupy', key: '1' },
+
+      ]);
+    const addNote = (note) => {
+        note.key = Math.random().toString();
+        setTodos((curNotes)=>{
+            return [note, ...curNotes];
+        });
+        SetModalOpen(false);
+    }
+      const pressHandler = (key) => {
+        setTodos(prevTodos => {
+          return prevTodos.filter(todo => todo.key != key);
+        });
+      };
     return (
         <View style={globalStyles.container}>
-            <ScrollView style={{height:Dimensions.get('window').height}}>
-                <ListText>List {props.myProps}
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-                Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-                Lorem 
-                </ListText>
-                    
-            </ScrollView>
-            <View style={{alignItems: 'flex-end', marginTop:Dimensions.get('screen').height-130,width:Dimensions.get('window').width, position:"absolute"}}>
-                <Modal visible={modalOpen} animationType='slide'>
+            <View >
+                <View >
+                    {/* add todo form */}
                     <View>
-                    <TouchableOpacity onPress={()=> SetModalOpen(false)}>
+                    <FlatList
+                        data={todos}
+                        renderItem={({ item }) => (
+                        <TodoItem item={item} pressHandler={pressHandler} />
+                        )}
+                    />
+                    </View>
+                </View>
+                </View>
+
+            <View style={{alignItems: 'flex-end', bottom:120,width:Dimensions.get('window').width, position:"absolute"}}>
+                <Modal visible={modalOpen} animationType='slide'>
+                    <View style={globalStyles.container}>
+                    <TouchableOpacity style={{marginLeft:10}} onPress={()=> SetModalOpen(false)}>
                         <Icon
                             name="chevron-left"
-                            size={40}
-                            style={{marginTop:10}}
-                        />
+                            size={30}
+                        >
+                        <Text>Wróć</Text>
+                        </Icon>
                         </TouchableOpacity>
-                        <AddPage></AddPage>
+                        <AddPage addNote={addNote}></AddPage>
 
                     </View>
                 </Modal>
                 <TouchableOpacity onPress={()=> SetModalOpen(true)}>
-                    <View style={{marginRight:10,
-                            padding:15,
-                            width:70,
-                            height:70,
-                            alignItems:'center',
-                            backgroundColor:'rgba(0,150,245,1)',
-                            borderRadius:50,}}>
+                    <View style={globalStyles.roundButton}>
                         <Icon
                         name="plus"
                         size={40}

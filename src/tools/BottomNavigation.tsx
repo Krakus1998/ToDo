@@ -11,7 +11,7 @@ const BottomTabs: FC = () => {
     <Tab.Navigator
       initialRouteName="Feed"
       tabBarOptions={{
-        activeTintColor: '#FFCC10',
+        activeTintColor: 'blue',
         activeBackgroundColor:'#f1f1f1',
       }}
     >

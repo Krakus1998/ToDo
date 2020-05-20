@@ -1,30 +1,40 @@
 import React, { FC } from 'react';
-import {StyleSheet,Button,View,Text} from 'react-native';
+import {Text,View, TouchableOpacity} from 'react-native';
 import {Formik} from 'formik';
 import { TextInput } from 'react-native-gesture-handler';
+import {globalStyles} from '../../styles/globalStyle';
 
-export default function ReviewForm() {
+export default function ReviewForm({addNote}) {
     
     return(
-        <View>
-            <Formik initialValues={{title:'',body:''}}
+        <View style={globalStyles.container}>
+            <Formik 
+            initialValues={{title:'',body:''}}
             onSubmit={(values)=>{
+            addNote(values);
             console.log(values);
             }}
             >
                 {(props)=>(
                     <View>
                         <TextInput
-                            placeholder="reviewtitle"
+                            style={globalStyles.formInput}
+                            placeholder="Tytuł"
                             onChangeText={props.handleChange('title')}
                             value={props.values.title}
                         />
                         <TextInput
-                            placeholder="body"
+                            style={globalStyles.formInput}
+                            placeholder="Treść"
                             onChangeText={props.handleChange('body')}
                             value={props.values.body}
                         />
-                        <Button title='submit' color='maroon' onPress={props.handleSubmit}/>
+                        <TouchableOpacity onPress={props.handleSubmit}>
+                            <View style={globalStyles.formButton}>
+                                <Text>Dodaj</Text>
+                            </View>
+                        </TouchableOpacity>
+                        {/* <Button title="submit" style={globalStyles.formButton} onPress={props.handleSubmit}/> */}
                     </View>
                 )}
             </Formik>
